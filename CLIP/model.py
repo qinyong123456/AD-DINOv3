@@ -15,7 +15,6 @@ from torch import nn
 from torch.utils.checkpoint import checkpoint
 from .modified_resnet import ModifiedResNet
 from .transformer import LayerNormFp32, LayerNorm, QuickGELU, Attention, VisionTransformer, TextTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 @dataclass
