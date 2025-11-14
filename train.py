@@ -94,15 +94,15 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="visa", help="dataset")
     parser.add_argument("--epoch", type=int, default=100, help="epoch")
     parser.add_argument("--lr", type=float, default=0.00001, help="lr")
+    parser.add_argument("--backbone_name", type=str, default="dinov3_vitl16", help="dinov3 backbone name")
+    parser.add_argument("--dinov3_weights", type=str, default="./dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth", help="dinov3 weights path")
     args = parser.parse_args()
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     os.makedirs(f"{args.result_path}", exist_ok=True)
     
-    # loading dinov3
     repo_dir = './dinov3'
-    Dinov3_model_path = './dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth'
-    Dino_model = torch.hub.load(repo_dir, 'dinov3_vitl16', source = 'local', weights = Dinov3_model_path)
+    Dino_model = torch.hub.load(repo_dir, args.backbone_name, source='local', weights=args.dinov3_weights)
     Dino_model.to(device)
     Dino_model.eval()
 
@@ -111,8 +111,9 @@ if __name__ == "__main__":
     clip_model.to(device)
     clip_model.eval()
 
-    # AD-DINOv3
-    model = model_adapter(c_in=1024, device=device)
+    anchor = getattr(Dino_model, "norm", None) or getattr(Dino_model, "fc_norm", None)
+    c_in = anchor.normalized_shape[0] if anchor is not None else getattr(Dino_model, "embed_dim", 1024)
+    model = model_adapter(c_in=c_in, device=device)
     model.to(device)
     model.train()
 
