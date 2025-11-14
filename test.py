@@ -24,6 +24,8 @@ def prepare_data(dataset_name, category, args, **kwargs):
                          f"Available: {list(DATASET_REGISTRY.keys())}")
 
     dataset_cls, split_cls, root_path = DATASET_REGISTRY[dataset_name]
+    if getattr(args, "dataset_root", None):
+        root_path = args.dataset_root
 
     test_dataset = dataset_cls(
         source=root_path,
@@ -103,6 +105,7 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="mvtec", help="dataset")
     parser.add_argument("--backbone_name", type=str, default="dinov3_vitl16", help="dinov3 backbone name")
     parser.add_argument("--dinov3_weights", type=str, default="./dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth", help="dinov3 weights path")
+    parser.add_argument("--dataset_root", type=str, default=None, help="override dataset root path")
     args = parser.parse_args()
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
