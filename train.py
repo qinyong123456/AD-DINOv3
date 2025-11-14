@@ -92,7 +92,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--result_path", type=str, default="./Result", help="path to result")
     parser.add_argument("--device", type=str, default="cuda:6", help="device")
-    parser.add_argument("--batch_size", type=int, default=64, help="batch size")
+    parser.add_argument("--batch_size", type=int, default=16, help="batch size")
     parser.add_argument("--dataset", type=str, default="visa", help="dataset")
     parser.add_argument("--epoch", type=int, default=100, help="epoch")
     parser.add_argument("--lr", type=float, default=0.00001, help="lr")
