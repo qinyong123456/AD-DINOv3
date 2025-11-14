@@ -30,9 +30,9 @@ class CLIP_Inplanted(nn.Module):
     def __init__(self, c_in, device):
         super().__init__()
         self.device = device
-        self.cls_token_adapter = nn.ModuleList([ClipAdapter(c_in = 1024) for _ in range(4)])
-        self.prompt_adapter = nn.ModuleList([ClipAdapter(c_in = 768) for _ in range(2)])
-        self.patch_token_adapter = nn.ModuleList([ClipAdapter(c_in = 1024) for _ in range(4)])
+        self.cls_token_adapter = nn.ModuleList([ClipAdapter(c_in=c_in) for _ in range(4)])
+        self.prompt_adapter = nn.ModuleList([ClipAdapter(c_in=768) for _ in range(2)])
+        self.patch_token_adapter = nn.ModuleList([ClipAdapter(c_in=c_in) for _ in range(4)])
 
     def forward(self,):
         return
