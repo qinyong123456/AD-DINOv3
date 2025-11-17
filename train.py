@@ -22,7 +22,7 @@ visa_ALL = {"candle", "capsules", "cashew", "chewinggum",
             "pcb2", "pcb3", "pcb4", "pipe_fryum"}
 
 use_cuda = torch.cuda.is_available()
-kwargs = {'num_workers': 0, 'pin_memory': True} if use_cuda else {}
+kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
 
 def _downsample_mask_to_tokens(mask_bchw: torch.Tensor, S: int) -> torch.Tensor:
     if mask_bchw.dim() == 3:
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default="cuda:6", help="device")
     parser.add_argument("--batch_size", type=int, default=16, help="batch size")
     parser.add_argument("--dataset", type=str, default="visa", help="dataset")
-    parser.add_argument("--epoch", type=int, default=100, help="epoch")
+    parser.add_argument("--epoch", type=int, default=10, help="epoch")
     parser.add_argument("--lr", type=float, default=0.00001, help="lr")
     parser.add_argument("--backbone_name", type=str, default="dinov3_vitl16", help="dinov3 backbone name")
     parser.add_argument("--dinov3_weights", type=str, default="./dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth", help="dinov3 weights path")
@@ -135,10 +135,10 @@ if __name__ == "__main__":
     total_steps = args.epoch * len(train_data)
     warmup_steps = int(0.03 * total_steps)
 
-    scheduler = LambdaLR(optimizer, lr_lambda)
+    # scheduler = LambdaLR(optimizer, lr_lambda)
 
     # If you want to speed up the convergence, please use the following line of code.
-    # scheduler = LambdaLR(optimizer, lr_lambda=lambda epoch: 1 / (epoch/10 + 1))
+    scheduler = LambdaLR(optimizer, lr_lambda=lambda epoch: 1 / (epoch/10 + 1))
 
     loss_focal = FocalLoss()
     loss_dice = BinaryDiceLoss()
