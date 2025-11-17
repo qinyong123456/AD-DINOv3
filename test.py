@@ -187,12 +187,12 @@ if __name__ == "__main__":
             for image_info in test_loader:
                 img_paths = image_info["image_path"]
                 cls_token, patch_tokens = get_feature_dinov3(img_paths, image_info["image"].to(device), device, Dino_model)
-                x = patch_tokens[-1]
+                x = patch_tokens[-1]  # [B, N, C]
                 S = int((x.shape[1]) ** 0.5)
                 x = x / (x.norm(dim=-1, keepdim=True) + 1e-6)
-                d = infer_distances(x.view(-1, x.size(-1)), bank)
-                d_map = d.view(S, S).unsqueeze(0).unsqueeze(0)
-                d_map_up = torch.nn.functional.interpolate(d_map, size=512, mode='bilinear', align_corners=True)[0,0]
-                for p in img_paths:
+                for b, p in enumerate(img_paths):
+                    d = infer_distances(x[b], bank)  # [N]
+                    d_map = d.view(S, S).unsqueeze(0).unsqueeze(0)
+                    d_map_up = torch.nn.functional.interpolate(d_map, size=512, mode='bilinear', align_corners=True)[0,0]
                     name = os.path.splitext(os.path.basename(p))[0]
                     np.save(f"{save_dir}/{name}.npy", d_map_up.cpu().numpy())
