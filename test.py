@@ -15,7 +15,7 @@ from tools.visualization import visualization
 from Datasets import DATASET_REGISTRY, DATASET_CLASSES
 
 use_cuda = torch.cuda.is_available()
-kwargs = {'num_workers': 0, 'pin_memory': True} if use_cuda else {}
+kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
 
 def prepare_data(dataset_name, category, args, **kwargs):
     dataset_name = dataset_name.lower()
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--result_path", type=str, default="./Result", help="path to result")
     parser.add_argument("--device", type=str, default="cuda:1", help="device")
-    parser.add_argument("--batch_size", type=int, default=64, help="batch size")
+    parser.add_argument("--batch_size", type=int, default=16, help="batch size")
     parser.add_argument("--dataset", type=str, default="mvtec", help="dataset")
     parser.add_argument("--backbone_name", type=str, default="dinov3_vitl16", help="dinov3 backbone name")
     parser.add_argument("--dinov3_weights", type=str, default="./dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth", help="dinov3 weights path")
